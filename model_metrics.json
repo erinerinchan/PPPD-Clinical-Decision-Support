@@ -1,0 +1,41 @@
+{
+  "cv_comparison": {
+    "Linear Regression": {
+      "mean_r2": 0.6544696260291292,
+      "std_r2": 0.017417746714508325
+    },
+    "Random Forest": {
+      "mean_r2": 0.5918490812787564,
+      "std_r2": 0.02408890533363871
+    },
+    "Gradient Boosting": {
+      "mean_r2": 0.5503031876431599,
+      "std_r2": 0.014350147950956611
+    }
+  },
+  "test_metrics": {
+    "vrt_response": {
+      "r2": 0.6324160646537181,
+      "mae": 0.04105253349004778,
+      "rmse": 0.05355788686485521
+    },
+    "vr_response": {
+      "r2": 0.5507769867623333,
+      "mae": 0.04230218960888256,
+      "rmse": 0.05515874203549188
+    }
+  },
+  "best_model": "Linear Regression",
+  "n_train": 400,
+  "n_test": 100,
+  "features": [
+    "age",
+    "baseline_dhi",
+    "anxiety",
+    "visual_sens",
+    "symptom_duration",
+    "trigger_count",
+    "migraine",
+    "anxiety_disorder"
+  ]
+}

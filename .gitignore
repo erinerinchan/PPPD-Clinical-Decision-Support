@@ -1,0 +1,12 @@
+# Virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Trained model artefact (regenerate via train_model.py if missing)
+# pppd_vrt_model.pkl  — tracked so the app runs without retraining

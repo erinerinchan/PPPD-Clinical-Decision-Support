@@ -327,6 +327,9 @@ def layered_scroll(sections_data, height=2000):
 
   /* ── wheel ── */
   document.addEventListener('wheel', function(e){
+    /* let modals scroll natively */
+    if(e.target.closest && e.target.closest('.sym-modal')) return;
+
     var ai = activeIdx();
     var track = sections[ai].querySelector('.track');
 
@@ -365,6 +368,9 @@ def layered_scroll(sections_data, height=2000):
     tai = activeIdx(); ts = vTarget; ths = hTargets[tai]; tdir = null;
   });
   document.addEventListener('touchmove', function(e){
+    /* let modals scroll natively */
+    if(e.target.closest && e.target.closest('.sym-modal')) return;
+
     var dx = tx - e.touches[0].clientX;
     var dy = ty - e.touches[0].clientY;
 

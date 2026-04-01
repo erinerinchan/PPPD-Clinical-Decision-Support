@@ -407,3 +407,165 @@ body.menu-open .stTabs { z-index: 1000001 !important; }
 [data-baseweb="select"] * {
   cursor: pointer !important;
 }
+
+/* ══════════════════════════════════════════════════
+   Dark Mode Support
+   Streamlit applies [data-theme] on internal elements,
+   but also respects prefers-color-scheme. We target both.
+   ══════════════════════════════════════════════════ */
+@media (prefers-color-scheme: dark) {
+  html, body, .stApp {
+    background: #0e1117 !important;
+    color: #e0e0e0 !important;
+  }
+  .fixed-banner {
+    background: #161b22 !important;
+    color: #e6edf3 !important;
+    border-bottom-color: #30363d !important;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,0.35) !important;
+  }
+  .stTabs { background: #0e1117 !important; }
+  .stTabs [data-baseweb="tab-panel"] { background: #0e1117 !important; }
+  .stTabs [data-baseweb="tab-list"]::after { background: #30363d !important; }
+  .stTabs [data-baseweb="tab-list"] button {
+    background: #0e1117 !important;
+    color: #8b949e !important;
+  }
+  .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+    background: #e6edf3 !important;
+    color: #0e1117 !important;
+  }
+  .stMarkdown, .stMarkdown p, .stMarkdown li, .stMarkdown span,
+  .stMarkdown td, .stMarkdown th {
+    color: #e0e0e0 !important;
+  }
+  .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .section-header {
+    color: #e6edf3 !important;
+    border-bottom-color: #30363d !important;
+  }
+  .tab-heading { color: #e6edf3 !important; }
+  .stMarkdown a { color: #58a6ff !important; }
+  .card {
+    background: #161b22 !important;
+    border-color: #30363d !important;
+    box-shadow: 0 6px 32px 0 rgba(0,0,0,0.3) !important;
+  }
+  .highlight {
+    background: #e6edf3 !important;
+    color: #0e1117 !important;
+  }
+  /* Flip cards */
+  .flip-card-front {
+    background: #161b22 !important;
+    color: #e6edf3 !important;
+    border-color: #30363d !important;
+  }
+  .flip-card-back {
+    background: #e6edf3 !important;
+    color: #0e1117 !important;
+    border-color: #30363d !important;
+  }
+  /* Step tracker */
+  .sl { color: #555 !important; }
+  .sl.active { color: #e6edf3 !important; }
+  .sl.done { color: #8b949e !important; }
+  .sd::after { border-color: #30363d !important; background: #0e1117 !important; }
+  .sd.active::after, .sd.done::after { background: #e6edf3 !important; border-color: #e6edf3 !important; }
+  .step-dots::before { background: #30363d !important; }
+  /* Streamlit form containers */
+  [data-testid="stForm"], div[data-testid="stExpander"],
+  div[data-testid="stVerticalBlock"] > div[style*="border"] {
+    border-color: #30363d !important;
+  }
+  div.stAlert > div { color: #e0e0e0 !important; }
+  /* Metrics */
+  [data-testid="stMetricValue"] { color: #e6edf3 !important; }
+  [data-testid="stMetricLabel"] label { color: #8b949e !important; }
+  /* Inputs */
+  .stNumberInput input, .stTextInput input, .stTextArea textarea {
+    background: #161b22 !important;
+    color: #e0e0e0 !important;
+    border-color: #30363d !important;
+  }
+  [data-baseweb="select"] > div {
+    background: #161b22 !important;
+    border-color: #30363d !important;
+    color: #e0e0e0 !important;
+  }
+  [data-baseweb="popover"] [data-baseweb="menu"],
+  [data-baseweb="popover"] ul {
+    background: #161b22 !important;
+    color: #e0e0e0 !important;
+  }
+  [data-baseweb="popover"] li:hover {
+    background: #21262d !important;
+  }
+  /* Slider */
+  .stSlider [data-baseweb="slider"] [role="slider"],
+  .stSelectSlider [data-baseweb="slider"] [role="slider"] {
+    background: #e6edf3 !important; border-color: #e6edf3 !important;
+  }
+  .stSlider [data-baseweb="slider"] [data-testid="stSliderTrackActive"],
+  .stSelectSlider [data-baseweb="slider"] [data-testid="stSliderTrackActive"],
+  div[data-baseweb="slider"] div[style*="background"] {
+    background-color: #e6edf3 !important;
+  }
+  .stSlider [data-baseweb="slider"] div[data-testid="stThumbValue"] {
+    color: #e6edf3 !important;
+  }
+  /* Dividers */
+  hr, .stDivider { border-color: #21262d !important; }
+  /* Caption */
+  .stCaption, small { color: #8b949e !important; }
+  /* Hamburger */
+  .hamburger-icon span { background: #e6edf3 !important; }
+  /* Mobile tab popup */
+  @media (max-width: 768px) {
+    .stTabs [data-baseweb="tab-list"] {
+      background: #161b22 !important;
+      outline-color: #30363d !important;
+    }
+    .menu-backdrop { background: rgba(0,0,0,0.55) !important; }
+  }
+  /* Plotly / charts – transparent bg to inherit */
+  .js-plotly-plot .plot-container { background: transparent !important; }
+  .stDataFrame { color: #e0e0e0 !important; }
+  .stDataFrame [data-testid="stDataFrameResizable"] {
+    background: #161b22 !important;
+  }
+  /* Streamlit container borders */
+  [data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"]) {
+    border-color: #30363d !important;
+  }
+  /* Download button */
+  .stDownloadButton button {
+    background: #e6edf3 !important;
+    color: #0e1117 !important;
+    border-color: #e6edf3 !important;
+  }
+  .stDownloadButton button:hover {
+    background: #c9d1d9 !important;
+  }
+  /* Primary button */
+  .stButton button[kind="primary"], button[data-testid="stBaseButton-primary"] {
+    background: #e6edf3 !important;
+    color: #0e1117 !important;
+    border-color: #e6edf3 !important;
+  }
+  .stButton button[kind="primary"]:hover, button[data-testid="stBaseButton-primary"]:hover {
+    background: #c9d1d9 !important;
+  }
+  /* Secondary button */
+  .stButton button:not([kind="primary"]) {
+    border-color: #30363d !important;
+    color: #e0e0e0 !important;
+  }
+  /* Expander */
+  [data-testid="stExpander"] summary {
+    color: #e6edf3 !important;
+  }
+  [data-testid="stExpander"] {
+    border-color: #30363d !important;
+    background: #161b22 !important;
+  }
+}

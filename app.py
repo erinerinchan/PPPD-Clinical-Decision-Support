@@ -1007,6 +1007,55 @@ with tab2:
                     help="Diagnosed anxiety disorder? (~40% of PPPD patients)"
                 )
 
+            # ── Differential Diagnosis Considerations ──
+            with st.expander("🔍 Differential Considerations", expanded=False):
+                _diff_notes = []
+                if migraine == "Yes":
+                    _diff_notes.append(
+                        "**Vestibular Migraine:** Migraine comorbidity is common in PPPD, "
+                        "but ensure episodic vertigo attacks are not better explained by "
+                        "vestibular migraine alone "
+                        "([Lempert et al., 2012](https://doi.org/10.1177/0333102412438796))."
+                    )
+                if vis_level >= 7:
+                    _diff_notes.append(
+                        "**Visual Vertigo / BPPV:** High visual sensitivity may also "
+                        "indicate visual vertigo syndrome or unresolved BPPV. Consider "
+                        "Dix-Hallpike testing to rule out positional triggers "
+                        "([von Brevern et al., 2015](https://doi.org/10.1007/s00415-014-7582-4))."
+                    )
+                if anx_level >= 7:
+                    _diff_notes.append(
+                        "**Panic Disorder / Agoraphobia:** Elevated anxiety with dizziness "
+                        "may overlap with panic disorder. Screen for isolated panic attacks "
+                        "and agoraphobic avoidance "
+                        "([Balaban & Jacob, 2001](https://doi.org/10.1097/00005053-200107000-00002))."
+                    )
+                if anxiety_disorder == "Yes":
+                    _diff_notes.append(
+                        "**Functional Neurological Disorder (FND):** Anxiety disorder "
+                        "with chronic dizziness may co-occur with broader FND. Consider "
+                        "assessing for other functional symptoms "
+                        "([Stone et al., 2010](https://doi.org/10.1136/jnnp.2009.177204))."
+                    )
+                if symptom_dur < 3:
+                    _diff_notes.append(
+                        "**Acute Vestibular Syndrome:** Symptoms < 3 months may represent "
+                        "an acute vestibular episode (neuritis, BPPV) that has not yet "
+                        "transitioned to PPPD. Re-evaluate after the 3-month threshold."
+                    )
+                if not _diff_notes:
+                    _diff_notes.append(
+                        "No specific differential flags based on current inputs. "
+                        "Standard PPPD workup is appropriate."
+                    )
+                for note in _diff_notes:
+                    st.markdown(f"- {note}")
+                st.caption(
+                    "These are automated reminders, not diagnoses. "
+                    "Always apply full clinical judgement."
+                )
+
             # ── Input validation ──
             _validation_warnings = []
             if age < 18 or age > 85:
@@ -1634,18 +1683,22 @@ with tab3:
         """
     **📚 References This Project Is Based On**
 
-    * Staab et al. (2017) — Diagnostic criteria for PPPD — [PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC9249299/)
-    * Popkirov et al. (2018) — PPPD: a treatable cause of chronic dizziness — [BMJ](https://pn.bmj.com/content/18/1/5)
-    * Steensnaes et al. (2023) — Vestibular rehabilitation for PPPD
-    * Micarelli et al. (2019) — VR-enhanced vestibular rehabilitation
+    * Staab et al. (2017) — Diagnostic criteria for PPPD — [DOI: 10.1097/WNO.0000000000000539](https://doi.org/10.1097/WNO.0000000000000539) · [PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC9249299/)
+    * Popkirov et al. (2018) — PPPD: a treatable cause of chronic dizziness — [DOI: 10.1136/practneurol-2017-001809](https://doi.org/10.1136/practneurol-2017-001809) · [BMJ](https://pn.bmj.com/content/18/1/5)
+    * Steensnaes et al. (2023) — Vestibular rehabilitation for PPPD — [DOI: 10.3389/fneur.2023.1152834](https://doi.org/10.3389/fneur.2023.1152834)
+    * Micarelli et al. (2019) — VR-enhanced vestibular rehabilitation — [DOI: 10.1007/s00415-019-09339-4](https://doi.org/10.1007/s00415-019-09339-4)
+    * Whitney et al. (2016) — Vestibular rehabilitation meta-analysis — [DOI: 10.1002/14651858.CD005397.pub4](https://doi.org/10.1002/14651858.CD005397.pub4)
+    * Jacobson & Newman (1990) — Dizziness Handicap Inventory — [DOI: 10.1177/000348949009900210](https://doi.org/10.1177/000348949009900210)
+    * Bittar & von Söhsten Lins (2015) — Symptom duration and prognosis — [DOI: 10.1055/s-0034-1395510](https://doi.org/10.1055/s-0034-1395510)
+    * Herdman et al. (2020) — Comorbidity in vestibular disorders — [DOI: 10.3389/fneur.2020.00504](https://doi.org/10.3389/fneur.2020.00504)
     * PPPD mechanisms & treatment review — [PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC11272556/)
     * Conservative therapy for PPPD — [Frontiers](https://www.frontiersin.org/journals/psychiatry/articles/10.3389/fpsyt.2025.1676218/full)
     * PPPD management & rehabilitation — [PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC11193666/)
 
     **📂 Dataset**
 
-    * [OpenNeuro ds004460 v1.1.0](https://openneuro.org/datasets/ds004460/versions/1.1.0) — EEG + motion capture data
-    * Gramann et al. (2021) — Cortical dynamics during heading changes
+    * [OpenNeuro ds004460 v1.1.0](https://openneuro.org/datasets/ds004460/versions/1.1.0) — EEG + motion capture data · [DOI: 10.18112/openneuro.ds004460.v1.1.0](https://doi.org/10.18112/openneuro.ds004460.v1.1.0)
+    * Gramann et al. (2021) — Cortical dynamics during heading changes — [DOI: 10.1038/s41598-021-97749-8](https://doi.org/10.1038/s41598-021-97749-8)
 
     ---
 
@@ -1688,8 +1741,6 @@ with tab3:
     Authority. This project demonstrates how machine learning and clinical
     decision support tools can augment evidence-based care — aligning with
     Hong Kong's Smart Hospital initiatives and the HA's digital health strategy.
-    Relevant local programmes include the MSc Health Analytics at HKU, CUHK's
-    MSc in Health Data Science, and PolyU's MSc in Health Informatics.
     """
     )
 

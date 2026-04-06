@@ -1908,6 +1908,93 @@ with tab3:
     st.markdown('<div style="margin-top:2rem"></div>', unsafe_allow_html=True)
     st.divider()
 
+    # ── Sensitivity Analysis / Partial Dependence Plots ──
+    st.markdown("### Sensitivity Analysis — Partial Dependence")
+    st.markdown(
+        "Partial dependence plots show how the model's predicted treatment response changes "
+        "when a single feature is varied while all other features are held at their median values. "
+        "This reveals the marginal effect of each clinical variable on predicted outcomes."
+    )
+
+    if model is not None:
+        training_df = None
+        _train_path = _DIR / "training_data.csv"
+        if _train_path.exists():
+            training_df = pd.read_csv(_train_path)
+
+        feature_cols_app = ["age", "baseline_dhi", "anxiety", "visual_sens",
+                            "symptom_duration", "trigger_count", "migraine", "anxiety_disorder"]
+        feat_labels = ["Age", "Baseline DHI", "Anxiety", "Visual Sens.",
+                       "Symptom Duration", "Trigger Count", "Migraine", "Anxiety Disorder"]
+
+        pdp_feature = st.selectbox(
+            "Select feature to explore",
+            options=list(zip(feature_cols_app, feat_labels)),
+            format_func=lambda x: x[1],
+        )
+        pdp_feat_col, pdp_feat_label = pdp_feature
+
+        # Create range for the selected feature
+        if training_df is not None:
+            feat_min = training_df[pdp_feat_col].min()
+            feat_max = training_df[pdp_feat_col].max()
+            medians = training_df[feature_cols_app].median().values
+        else:
+            feat_min, feat_max = 0, 10
+            medians = np.array([38, 50, 5, 5, 14, 2.5, 0, 0])
+
+        if pdp_feat_col in ["migraine", "anxiety_disorder"]:
+            feat_range = np.array([0, 1])
+        elif pdp_feat_col == "trigger_count":
+            feat_range = np.array([1, 2, 3, 4, 5])
+        else:
+            feat_range = np.linspace(feat_min, feat_max, 50)
+
+        # Generate PDP
+        vrt_pdp = []
+        vr_pdp = []
+        feat_idx = feature_cols_app.index(pdp_feat_col)
+
+        for val in feat_range:
+            x_pdp = medians.copy()
+            x_pdp[feat_idx] = val
+            pred = model.predict(x_pdp.reshape(1, -1))[0]
+            vrt_pdp.append(pred[0] * 100)
+            vr_pdp.append(pred[1] * 100)
+
+        pdp_fig = go.Figure()
+        pdp_fig.add_trace(go.Scatter(
+            x=feat_range, y=vrt_pdp,
+            mode="lines", name="Traditional VRT",
+            line=dict(color="#3b82f6", width=3),
+        ))
+        pdp_fig.add_trace(go.Scatter(
+            x=feat_range, y=vr_pdp,
+            mode="lines", name="VR-Enhanced VRT",
+            line=dict(color="#10b981", width=3),
+        ))
+        pdp_fig.update_layout(
+            title=f"Partial Dependence: {pdp_feat_label} → Predicted Response",
+            xaxis_title=pdp_feat_label,
+            yaxis_title="Predicted Response Rate (%)",
+            height=400,
+            legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01),
+        )
+        _chart_cfg = {"displaylogo": False, "modeBarButtonsToRemove": ["zoom2d","pan2d","select2d","lasso2d","zoomIn2d","zoomOut2d","autoScale2d","resetScale2d","hoverClosestCartesian","hoverCompareCartesian","toggleSpikelines","toImage"]}
+        st.plotly_chart(pdp_fig, use_container_width=True, config=_chart_cfg)
+
+        if pdp_feat_col == "anxiety":
+            st.caption("Higher anxiety consistently reduces predicted treatment response. The effect is steeper for traditional VRT, consistent with Popkirov et al. (2018).")
+        elif pdp_feat_col == "visual_sens":
+            st.caption("Higher visual sensitivity improves VR-VRT response but has minimal effect on traditional VRT — the key driver of VR's advantage (Micarelli et al., 2019).")
+        elif pdp_feat_col == "symptom_duration":
+            st.caption("Longer symptom duration (chronicity) reduces both treatment responses, with diminishing returns after ~24 months (Bittar & von Söhsten Lins, 2015).")
+        elif pdp_feat_col == "migraine":
+            st.caption("Migraine comorbidity substantially reduces VR-VRT response due to motion sensitivity limiting VR tolerance (Micarelli et al., 2019).")
+
+    st.markdown('<div style="margin-top:2rem"></div>', unsafe_allow_html=True)
+    st.divider()
+
     # ── Spacer ──
     st.markdown('<div style="height:10rem"></div>', unsafe_allow_html=True)
 

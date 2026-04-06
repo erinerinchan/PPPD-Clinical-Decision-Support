@@ -978,6 +978,55 @@ with tab2:
     # STEP 1a — Demographics & Clinical Inputs
     # ═══════════════════════════════════════════════════════
     if st.session_state.tab2_step == 1:
+        # ── Clinical Scenario Presets ──
+        _pad_s_l, scenario_col, _pad_s_r = st.columns([1, 2, 1])
+        with scenario_col:
+            st.markdown(
+                '<h4 style="text-align:center;margin-bottom:0.3rem">📋 Clinical Scenario Presets</h4>',
+                unsafe_allow_html=True,
+            )
+            st.caption("Select a pre-loaded patient profile to see how different clinical presentations affect predictions, or enter your own values below.")
+
+            scenario = st.selectbox(
+                "Choose a scenario",
+                ["Custom (enter manually)", "High anxiety, long duration, migraine", "Low anxiety, short duration, high visual sensitivity", "Typical PPPD patient"],
+                label_visibility="collapsed",
+            )
+
+            if scenario == "High anxiety, long duration, migraine":
+                st.session_state["_scenario_age"] = 52
+                st.session_state["_scenario_anx"] = 9
+                st.session_state["_scenario_vis"] = 5
+                st.session_state["_scenario_dur"] = 30
+                st.session_state["_scenario_trig"] = 4
+                st.session_state["_scenario_mig"] = "Yes"
+                st.session_state["_scenario_anx_dis"] = "Yes"
+                st.info("**Scenario:** Older patient with high anxiety and comorbid migraine, long symptom duration. Expect poor VRT response, moderate VR-VRT response.")
+            elif scenario == "Low anxiety, short duration, high visual sensitivity":
+                st.session_state["_scenario_age"] = 28
+                st.session_state["_scenario_anx"] = 2
+                st.session_state["_scenario_vis"] = 9
+                st.session_state["_scenario_dur"] = 4
+                st.session_state["_scenario_trig"] = 2
+                st.session_state["_scenario_mig"] = "No"
+                st.session_state["_scenario_anx_dis"] = "No"
+                st.info("**Scenario:** Young patient with low anxiety but high visual sensitivity. Expect strong VR-VRT response due to targeted visual desensitisation.")
+            elif scenario == "Typical PPPD patient":
+                st.session_state["_scenario_age"] = 38
+                st.session_state["_scenario_anx"] = 5
+                st.session_state["_scenario_vis"] = 6
+                st.session_state["_scenario_dur"] = 14
+                st.session_state["_scenario_trig"] = 2
+                st.session_state["_scenario_mig"] = "No"
+                st.session_state["_scenario_anx_dis"] = "No"
+                st.info("**Scenario:** Typical PPPD presentation with moderate symptoms. Expect moderate response to both treatment modalities.")
+            else:
+                # Clear scenario defaults
+                for k in ["_scenario_age", "_scenario_anx", "_scenario_vis", "_scenario_dur", "_scenario_trig", "_scenario_mig", "_scenario_anx_dis"]:
+                    st.session_state.pop(k, None)
+
+            st.markdown('<div style="margin-bottom:1rem"></div>', unsafe_allow_html=True)
+
         _pad_l, form_col, _pad_r = st.columns([1, 2, 1])
         with form_col:
             st.markdown(
@@ -987,23 +1036,26 @@ with tab2:
             st.caption("Enter the patient's demographics and clinical details below.")
             st.markdown('<div style="margin-bottom:1.8rem"></div>', unsafe_allow_html=True)
             with st.container(border=True):
-                age = st.number_input("Age", 18, 85, 38)
-                anx_level = st.select_slider("Anxiety/Distress", options=range(11), value=5)
-                vis_level = st.select_slider("Visual Sensitivity", options=range(11), value=6)
+                age = st.number_input("Age", 18, 85, st.session_state.get("_scenario_age", 38))
+                anx_level = st.select_slider("Anxiety/Distress", options=range(11), value=st.session_state.get("_scenario_anx", 5))
+                vis_level = st.select_slider("Visual Sensitivity", options=range(11), value=st.session_state.get("_scenario_vis", 6))
                 symptom_dur = st.number_input(
-                    "Symptom Duration (months)", 1, 72, 14,
+                    "Symptom Duration (months)", 1, 72, st.session_state.get("_scenario_dur", 14),
                     help="How many months the patient has experienced PPPD symptoms"
                 )
+                _trig_default = st.session_state.get("_scenario_trig", 2)
                 trigger_count = st.selectbox(
-                    "Number of Triggers", options=[1, 2, 3, 4, 5], index=1,
+                    "Number of Triggers", options=[1, 2, 3, 4, 5], index=_trig_default - 1,
                     help="Known triggers: vestibular event, visual motion, head movement, etc."
                 )
+                _mig_default = st.session_state.get("_scenario_mig", "No")
                 migraine = st.selectbox(
-                    "Migraine Comorbidity", options=["No", "Yes"], index=0,
+                    "Migraine Comorbidity", options=["No", "Yes"], index=0 if _mig_default == "No" else 1,
                     help="Does the patient have comorbid migraine? (~35% of PPPD patients)"
                 )
+                _anx_dis_default = st.session_state.get("_scenario_anx_dis", "No")
                 anxiety_disorder = st.selectbox(
-                    "Anxiety Disorder", options=["No", "Yes"], index=0,
+                    "Anxiety Disorder", options=["No", "Yes"], index=0 if _anx_dis_default == "No" else 1,
                     help="Diagnosed anxiety disorder? (~40% of PPPD patients)"
                 )
 

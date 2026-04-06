@@ -1630,8 +1630,33 @@ with tab2:
                 pdf.set_font("Helvetica", "B", 13)
                 pdf.cell(0, 8, "Predicted Outcomes", new_x="LMARGIN", new_y="NEXT")
                 pdf.set_font("Helvetica", "", 10)
-                pdf.cell(0, 7, f"After Standard VRT:       DHI {vrt_final}  (drop: {vrt_drop} pts)", new_x="LMARGIN", new_y="NEXT")
-                pdf.cell(0, 7, f"After VR-enhanced VRT:  DHI {vr_final}  (drop: {vr_drop} pts)", new_x="LMARGIN", new_y="NEXT")
+                pdf.cell(0, 7, f"After Standard VRT:       DHI {vrt_final}  (drop: {vrt_drop} pts)  90% CI: {vrt_final_ci_lo} - {vrt_final_ci_hi}", new_x="LMARGIN", new_y="NEXT")
+                pdf.cell(0, 7, f"After VR-enhanced VRT:  DHI {vr_final}  (drop: {vr_drop} pts)  90% CI: {vr_final_ci_lo} - {vr_final_ci_hi}", new_x="LMARGIN", new_y="NEXT")
+                pdf.cell(0, 7, f"VRT response rate: {vrt_rate*100:.1f}% (90% CI: {vrt_ci_lower*100:.1f}-{vrt_ci_upper*100:.1f}%)", new_x="LMARGIN", new_y="NEXT")
+                pdf.cell(0, 7, f"VR-VRT response rate: {vr_rate*100:.1f}% (90% CI: {vr_ci_lower*100:.1f}-{vr_ci_upper*100:.1f}%)", new_x="LMARGIN", new_y="NEXT")
+                pdf.ln(4)
+
+                # Feature importance for this patient (SHAP text)
+                pdf.set_font("Helvetica", "B", 13)
+                pdf.cell(0, 8, "Key Factors Driving This Prediction (SHAP)", new_x="LMARGIN", new_y="NEXT")
+                pdf.set_font("Helvetica", "", 10)
+                shap_vrt_vals = shap_vrt[0].values
+                shap_sorted = sorted(zip(feat_names, shap_vrt_vals), key=lambda x: abs(x[1]), reverse=True)
+                for fname, sval in shap_sorted[:5]:
+                    direction = "increases" if sval > 0 else "decreases"
+                    pdf.cell(0, 7, f"  {fname}: SHAP {sval:+.4f} ({direction} predicted response)", new_x="LMARGIN", new_y="NEXT")
+                pdf.ln(4)
+
+                # Treatment recommendation
+                pdf.set_font("Helvetica", "B", 13)
+                pdf.cell(0, 8, "Treatment Recommendation", new_x="LMARGIN", new_y="NEXT")
+                pdf.set_font("Helvetica", "", 10)
+                if vr_advantage_pct > 10:
+                    pdf.multi_cell(0, 6, f"Consider VR-enhanced VRT. Model predicts {vr_advantage_pct:.0f}pp advantage over traditional VRT.")
+                elif vrt_rate > 0.40:
+                    pdf.multi_cell(0, 6, f"Traditional VRT likely effective ({vrt_rate*100:.0f}% predicted improvement).")
+                else:
+                    pdf.multi_cell(0, 6, "Consider combined approach (VRT + pharmacotherapy/CBT).")
                 pdf.ln(6)
 
                 # Disclaimer

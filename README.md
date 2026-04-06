@@ -124,6 +124,18 @@ streamlit run app.py
 
 ---
 
+## Clinical Workflow Integration
+
+In a validated implementation, this tool would sit within the **post-diagnostic, pre-treatment planning** stage of the PPPD patient pathway. After a vestibular specialist confirms PPPD diagnosis (per Bárány Society criteria), the clinician would input the patient's baseline DHI score and clinical profile. The system would then:
+
+1. **Predict rehabilitation response** — helping clinicians decide between traditional VRT and VR-enhanced VRT based on the patient's likelihood of benefit
+2. **Identify risk factors** — flagging high-anxiety or migraine-comorbid patients who may need concurrent CBT or medication before starting VRT
+3. **Support shared decision-making** — giving patients a visual, evidence-informed picture of expected improvement to set realistic expectations
+
+The primary users would be **vestibular physiotherapists** and **ENT/neurology teams** in outpatient rehabilitation settings. In Hong Kong's Hospital Authority system, this could integrate with existing electronic patient records at specialist outpatient clinics, supporting triage and treatment allocation across the HA's network of rehabilitation centres.
+
+---
+
 ## Limitations & Honest Reflection
 
 ### What this project does well
@@ -142,6 +154,15 @@ streamlit run app.py
 1. **Target variable choice fundamentally shapes what a model learns.** Training on absolute DHI scores caused baseline severity to dominate at 94% importance — the model was just passing through the input. Switching to response rates produced clinically meaningful feature importance.
 2. **Transparency is more impressive than hiding limitations.** Documenting every assumption and limitation explicitly demonstrates analytical maturity.
 3. **Domain knowledge drives ML decisions.** The choice of features, outcome formulation, and interpretation all required understanding of PPPD pathophysiology — the ML technique is only useful in service of the clinical question.
+
+---
+
+## Ethical Considerations
+
+- **Algorithmic fairness:** The training data is bootstrapped from 20 participants with limited demographic diversity. A production system would require validation across age groups, sexes, and ethnic backgrounds to ensure equitable performance — particularly important in Hong Kong's diverse population.
+- **Automation bias:** Clinical decision support tools risk clinicians over-relying on model predictions. This system is designed to *augment* clinical judgement, not replace it — predictions should always be interpreted alongside the full clinical picture.
+- **Regulatory requirements:** Deploying clinical AI within Hong Kong's Hospital Authority would require compliance with the HA's Health IT governance framework, the Personal Data (Privacy) Ordinance, and potentially CE/FDA-class software-as-medical-device (SaMD) classification depending on the intended use.
+- **Transparency:** All model assumptions, training data provenance, and limitations are documented explicitly to support informed clinical interpretation.
 
 ---
 

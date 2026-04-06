@@ -1266,10 +1266,27 @@ with tab2:
                                              symptom_dur, trigger_count, mig_val, anx_dis_val]])
                 preds = model.predict(input_features)[0]
                 vrt_rate, vr_rate = float(preds[0]), float(preds[1])
+
+                # ── Confidence intervals from individual trees ──
+                all_tree_preds = np.array([tree.predict(input_features) for tree in model.estimators_])
+                # all_tree_preds shape: (n_trees, 1, 2) for multi-output
+                vrt_tree_preds = all_tree_preds[:, 0, 0]
+                vr_tree_preds = all_tree_preds[:, 0, 1]
+                vrt_ci_lower = float(np.percentile(vrt_tree_preds, 5))
+                vrt_ci_upper = float(np.percentile(vrt_tree_preds, 95))
+                vr_ci_lower = float(np.percentile(vr_tree_preds, 5))
+                vr_ci_upper = float(np.percentile(vr_tree_preds, 95))
+
                 vrt_final = round(base_dhi * (1 - np.clip(vrt_rate, 0, 1)), 1)
                 vr_final = round(base_dhi * (1 - np.clip(vr_rate, 0, 1)), 1)
                 vrt_drop = round(base_dhi - vrt_final, 1)
                 vr_drop = round(base_dhi - vr_final, 1)
+
+                # CI on final DHI scores
+                vrt_final_ci_lo = round(base_dhi * (1 - np.clip(vrt_ci_upper, 0, 1)), 1)
+                vrt_final_ci_hi = round(base_dhi * (1 - np.clip(vrt_ci_lower, 0, 1)), 1)
+                vr_final_ci_lo = round(base_dhi * (1 - np.clip(vr_ci_upper, 0, 1)), 1)
+                vr_final_ci_hi = round(base_dhi * (1 - np.clip(vr_ci_lower, 0, 1)), 1)
 
                 feat_names = ["Age", "Baseline DHI", "Anxiety", "Visual Sens.",
                               "Symptom Duration", "Trigger Count", "Migraine", "Anxiety Disorder"]

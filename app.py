@@ -1840,6 +1840,78 @@ per target — increasing complexity and losing any cross-target structure.
     st.markdown('<div style="height:10rem"></div>', unsafe_allow_html=True)
 
 
+# ── TAB 3 (Model & Sensitivity) ──
+with tab3:
+    st.markdown(
+        '<h2 class="tab-heading" style="margin-bottom:2rem">Model Performance &amp; Sensitivity Analysis</h2>',
+        unsafe_allow_html=True,
+    )
+
+    # ── Model Comparison Table ──
+    st.markdown("### Model Comparison")
+    st.markdown(
+        "Three regression models were compared using 5-fold cross-validation. "
+        "Random Forest was selected as the production model despite Linear Regression "
+        "achieving higher R², because RF supports **multi-output prediction** (both VRT "
+        "and VR-VRT simultaneously), provides **built-in feature importance**, and is more "
+        "**robust to non-linear interactions** likely present in real clinical data."
+    )
+
+    _metrics_path = _DIR / "model_metrics.json"
+    if _metrics_path.exists():
+        with open(_metrics_path) as _mf:
+            _metrics = json.load(_mf)
+
+        # CV results table
+        st.markdown("#### Cross-Validation Results (5-fold)")
+        cv_data = _metrics.get("cv_comparison", {})
+        cv_rows = []
+        for mname in ["Linear Regression", "Random Forest", "Gradient Boosting"]:
+            if mname in cv_data:
+                for tgt_key, tgt_label in [("vrt_response", "VRT"), ("vr_response", "VR-VRT")]:
+                    if tgt_key in cv_data[mname]:
+                        v = cv_data[mname][tgt_key]
+                        cv_rows.append({
+                            "Model": mname,
+                            "Target": tgt_label,
+                            "R² (mean ± std)": f"{v['mean_r2']:.4f} ± {v['std_r2']:.4f}",
+                            "MAE (mean ± std)": f"{v.get('mean_mae', 0):.4f} ± {v.get('std_mae', 0):.4f}",
+                        })
+        if cv_rows:
+            st.dataframe(pd.DataFrame(cv_rows), use_container_width=True, hide_index=True)
+
+        # Test-set comparison table
+        st.markdown("#### Test-Set Metrics")
+        all_test = _metrics.get("all_test_metrics", {})
+        if all_test:
+            test_rows = []
+            for mname in ["Linear Regression", "Random Forest", "Gradient Boosting"]:
+                if mname in all_test:
+                    vrt_m = all_test[mname].get("vrt_response", {})
+                    vr_m = all_test[mname].get("vr_response", {})
+                    test_rows.append({
+                        "Model": f"{'✅ ' if mname == 'Random Forest' else ''}{mname}",
+                        "VRT MAE": f"{vrt_m.get('mae', 0):.4f}",
+                        "VRT R²": f"{vrt_m.get('r2', 0):.4f}",
+                        "VR-VRT MAE": f"{vr_m.get('mae', 0):.4f}",
+                        "VR-VRT R²": f"{vr_m.get('r2', 0):.4f}",
+                    })
+            st.dataframe(pd.DataFrame(test_rows), use_container_width=True, hide_index=True)
+
+        st.caption(
+            f"Trained on {_metrics.get('n_train', '?')} samples · "
+            f"Tested on {_metrics.get('n_test', '?')} samples · "
+            f"Best single-target CV model: {_metrics.get('best_model', '?')} · "
+            f"Selected model: Random Forest (multi-output)"
+        )
+
+    st.markdown('<div style="margin-top:2rem"></div>', unsafe_allow_html=True)
+    st.divider()
+
+    # ── Spacer ──
+    st.markdown('<div style="height:10rem"></div>', unsafe_allow_html=True)
+
+
 # ── TAB 5 (Resources) ──
 with tab5:
     st.markdown(

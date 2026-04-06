@@ -1437,6 +1437,35 @@ with tab2:
                     '<h4 id="clinical-recommendations">Clinical Recommendations</h4>',
                     unsafe_allow_html=True,
                 )
+
+                # ── Treatment recommendation logic (VRT vs VR-VRT comparison) ──
+                vr_advantage_pct = (vr_rate - vrt_rate) * 100
+                if vr_advantage_pct > 10:
+                    st.success(
+                        f"**Consider VR-enhanced VRT.** The model predicts a {vr_advantage_pct:.0f} percentage-point "
+                        f"advantage for VR-based rehabilitation over traditional VRT for this patient. "
+                        f"{'High visual sensitivity suggests stronger response to VR-based desensitisation. ' if vis_level >= 6 else ''}"
+                        f"(Micarelli et al., 2019)"
+                    )
+                elif vrt_rate > 0.40:
+                    st.success(
+                        f"**Traditional VRT likely effective.** The model predicts a strong response to "
+                        f"standard vestibular rehabilitation ({vrt_rate*100:.0f}% DHI improvement). "
+                        f"VR enhancement may offer modest additional benefit (+{vr_advantage_pct:.0f}pp)."
+                    )
+                else:
+                    st.warning(
+                        "**Consider combined approach.** Predicted response to VRT alone is moderate. "
+                        "Consider combining vestibular rehabilitation with pharmacotherapy (SSRI/SNRI) "
+                        "and/or CBT for optimal outcomes."
+                    )
+
+                st.caption(
+                    "⚠️ These recommendations are generated from simulated data and should not "
+                    "replace clinical judgement. Always consider the full clinical picture."
+                )
+                st.markdown('<div style="margin-top:0.5rem"></div>', unsafe_allow_html=True)
+
                 _has_rec = False
 
                 # Anxiety-predominant: CBT / medication as primary

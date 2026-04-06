@@ -1554,6 +1554,38 @@ with tab2:
                 st.markdown('<div style="margin-top:1.5rem"></div>', unsafe_allow_html=True)
                 st.divider()
 
+                # ── Model Comparison Table (prominent) ──
+                _metrics_path = _DIR / "model_metrics.json"
+                if _metrics_path.exists():
+                    with open(_metrics_path) as _mf:
+                        _metrics = json.load(_mf)
+
+                    st.markdown("#### Model Comparison")
+                    st.caption(
+                        "Three models were evaluated. Random Forest was selected for its multi-output "
+                        "capability, built-in feature importance, and robustness — despite Linear Regression "
+                        "achieving slightly higher R² on single-target prediction."
+                    )
+
+                    all_test = _metrics.get("all_test_metrics", {})
+                    if all_test:
+                        comp_rows = []
+                        for mname in ["Linear Regression", "Random Forest", "Gradient Boosting"]:
+                            if mname in all_test:
+                                vrt_m = all_test[mname].get("vrt_response", {})
+                                vr_m = all_test[mname].get("vr_response", {})
+                                comp_rows.append({
+                                    "Model": f"{'✅ ' if mname == 'Random Forest' else ''}{mname}",
+                                    "VRT MAE": f"{vrt_m.get('mae', 0):.4f}",
+                                    "VRT R²": f"{vrt_m.get('r2', 0):.4f}",
+                                    "VR-VRT MAE": f"{vr_m.get('mae', 0):.4f}",
+                                    "VR-VRT R²": f"{vr_m.get('r2', 0):.4f}",
+                                })
+                        st.dataframe(pd.DataFrame(comp_rows), use_container_width=True, hide_index=True)
+
+                st.markdown('<div style="margin-top:1rem"></div>', unsafe_allow_html=True)
+                st.divider()
+
                 # Generate PDF report
                 pdf = FPDF()
                 pdf.add_page()

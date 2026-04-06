@@ -1297,18 +1297,20 @@ with tab2:
                     st.metric("Baseline DHI", base_dhi)
                 with col_k2:
                     st.metric(
-                        "After Standard Rehabilitation (VRT)",
+                        "After VRT",
                         vrt_final,
                         delta=f"-{vrt_drop} pts" if vrt_drop > 0 else f"+{abs(vrt_drop)} pts",
                         delta_color="inverse",
+                        help="Standard Vestibular Rehabilitation Therapy",
                     )
                     st.caption(f"90% CI: {vrt_final_ci_lo} – {vrt_final_ci_hi}")
                 with col_k3:
                     st.metric(
-                        "After VR-Enhanced Rehabilitation",
+                        "After VR-VRT",
                         vr_final,
                         delta=f"-{vr_drop} pts" if vr_drop > 0 else f"+{abs(vr_drop)} pts",
                         delta_color="inverse",
+                        help="VR-Enhanced Vestibular Rehabilitation",
                     )
                     st.caption(f"90% CI: {vr_final_ci_lo} – {vr_final_ci_hi}")
 

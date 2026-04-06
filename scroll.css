@@ -96,7 +96,7 @@ html,body{overflow:hidden;height:100%;font-family:'Inter','Segoe UI',sans-serif;
 .sym-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;
   background:rgba(0,0,0,.55);z-index:100000;align-items:center;justify-content:center}
 .sym-modal-content{background:#fff;border-radius:16px;width:92%;max-width:1100px;
-  max-height:85vh;display:flex;flex-direction:column;box-shadow:0 16px 48px rgba(0,0,0,.25);
+  max-height:85dvh;display:flex;flex-direction:column;box-shadow:0 16px 48px rgba(0,0,0,.25);
   border:2.5px solid #111;position:relative;overflow:hidden}
 .sym-modal-close{position:absolute;top:.8rem;right:1rem;font-size:2rem;
   cursor:pointer;color:#111;line-height:1;z-index:10;font-weight:700}
@@ -104,12 +104,14 @@ html,body{overflow:hidden;height:100%;font-family:'Inter','Segoe UI',sans-serif;
 .sym-modal-title{font-family:'Playfair Display',serif;font-weight:900;font-size:1.5rem;
   color:#111;padding:1.5rem 2rem .8rem;margin:0;border-bottom:2px solid #eee}
 .sym-modal-scroll{overflow:auto;padding:1rem 2rem 2rem;flex:1;
-  scrollbar-width:auto;scrollbar-color:#888 #e0e0e0}
+  scrollbar-width:auto;scrollbar-color:#888 #e0e0e0;
+  -webkit-overflow-scrolling:touch}
 .sym-modal-scroll::-webkit-scrollbar{width:8px;height:8px}
 .sym-modal-scroll::-webkit-scrollbar-track{background:#e0e0e0;border-radius:4px}
 .sym-modal-scroll::-webkit-scrollbar-thumb{background:#888;border-radius:4px}
 .sym-modal-scroll::-webkit-scrollbar-thumb:hover{background:#555}
-.sym-table{width:100%;border-collapse:collapse;font-family:'Inter',sans-serif;font-size:.82rem}
+.sym-table{width:100%;border-collapse:collapse;font-family:'Inter',sans-serif;font-size:.82rem;
+  min-width:0}
 .sym-table thead{position:sticky;top:0;z-index:1}
 .sym-table th{background:#111;color:#fff;padding:.7rem .8rem;text-align:left;
   font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
@@ -204,11 +206,12 @@ html,body{overflow:hidden;height:100%;font-family:'Inter','Segoe UI',sans-serif;
     flex-direction: column; gap: 0; z-index: 9999;
   }
   .nav-tab {
-    font-size: .48rem; padding: .6em .35em;
+    font-size: .58rem; padding: .55em .4em;
     border: 1.5px solid #111; border-right: none;
     border-radius: 6px 0 0 6px;
     writing-mode: vertical-rl; text-orientation: mixed;
     white-space: nowrap;
+    min-height: 2.5rem;
   }
   .sec-header { padding: 1.2rem 0 .1rem; }
   .sec-title { font-size: 1.6rem; letter-spacing: .03em; }
@@ -245,13 +248,13 @@ html,body{overflow:hidden;height:100%;font-family:'Inter','Segoe UI',sans-serif;
   .panel-prev-btn { left: 0.5rem; width: 36px; height: 36px; top: auto; bottom: .5rem; transform: none; }
   .panel-prev-btn:hover { transform: scale(1.1); }
 
-  .sym-modal-content { width: 96%; max-height: 80vh; }
+  .sym-modal-content { width: 96%; max-height: 80dvh; }
   .sym-modal-title { font-size: 1.2rem; padding: 1rem 1rem .6rem; }
   .sym-modal-scroll { padding: .8rem .5rem 1.5rem; overflow: auto; -webkit-overflow-scrolling: touch; }
   .sym-modal-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
   .sym-modal-scroll::-webkit-scrollbar-track { background: #ddd; }
   .sym-modal-scroll::-webkit-scrollbar-thumb { background: #666; border-radius: 3px; }
-  .sym-table { font-size: .72rem; min-width: 600px; }
+  .sym-table { font-size: .72rem; min-width: 0; }
   .sym-table th { padding: .5rem .5rem; font-size: .68rem; }
   .sym-table td { padding: .5rem .5rem; }
 
@@ -270,10 +273,11 @@ html,body{overflow:hidden;height:100%;font-family:'Inter','Segoe UI',sans-serif;
     justify-content: center;
   }
   .nav-tab {
-    font-size: .38rem; padding: .5em .3em;
+    font-size: .48rem; padding: .5em .35em;
     border-width: 1px; border-right: none;
     border-radius: 4px 0 0 4px;
     writing-mode: vertical-rl; text-orientation: mixed;
+    min-height: 2.2rem;
   }
   .sec-header { padding: .8rem 0 .1rem; }
   .sec-title { font-size: 1.4rem; }
@@ -309,13 +313,13 @@ html,body{overflow:hidden;height:100%;font-family:'Inter','Segoe UI',sans-serif;
   .panel-title { font-size: .9rem; }
   .panel-body { font-size: .7rem; line-height: 1.45; }
   .panel-body ul { padding-left: 1em; }
-  .nav-tab { font-size: .34rem; padding: .4em .25em; }
+  .nav-tab { font-size: .42rem; padding: .4em .3em; min-height: 2rem; }
   .intro-desc { font-size: .7rem; }
   .iflip { height: 85px; }
   .iflip-f { font-size: .75rem; }
   .iflip-b { font-size: .62rem; }
   .sym-modal-content { width: 98%; border-radius: 10px; }
-  .sym-table { min-width: 500px; font-size: .65rem; }
+  .sym-table { min-width: 0; font-size: .65rem; }
 }
 
 /* Landscape mobile (short viewport) */

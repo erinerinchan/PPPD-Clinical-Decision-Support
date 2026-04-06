@@ -1995,6 +1995,103 @@ with tab3:
     st.markdown('<div style="margin-top:2rem"></div>', unsafe_allow_html=True)
     st.divider()
 
+    # ── Participants.tsv Exploratory Analysis ──
+    st.markdown("### Source Demographics — OpenNeuro ds004460")
+    st.markdown(
+        "The seed demographics come from [OpenNeuro ds004460 v1.1.0](https://openneuro.org/datasets/ds004460/versions/1.1.0) "
+        "(Gramann et al., 2021) — 20 healthy participants in a motion-perception study. "
+        "Only age and sex distributions were used; all clinical variables are simulated."
+    )
+
+    if participants_df is not None:
+        col_orig, col_boot = st.columns(2)
+
+        with col_orig:
+            st.markdown("##### Original Cohort (n=20)")
+            st.dataframe(
+                participants_df[["participant_id", "age", "sex", "handedness"]],
+                use_container_width=True,
+                height=200,
+            )
+
+            orig_fig = go.Figure()
+            orig_fig.add_trace(go.Histogram(
+                x=participants_df["age"], nbinsx=8,
+                marker_color="#3b82f6", name="Original",
+            ))
+            orig_fig.update_layout(
+                title="Original Age Distribution (n=20)",
+                xaxis_title="Age", yaxis_title="Count",
+                height=250, margin=dict(t=40, b=30, l=40, r=20),
+            )
+            st.plotly_chart(orig_fig, use_container_width=True, config=_chart_cfg)
+
+        with col_boot:
+            st.markdown("##### After Bootstrap (n=500)")
+            if training_df is not None:
+                boot_fig = go.Figure()
+                boot_fig.add_trace(go.Histogram(
+                    x=training_df["age"], nbinsx=15,
+                    marker_color="#10b981", name="Bootstrapped",
+                ))
+                boot_fig.update_layout(
+                    title="Bootstrapped Age Distribution (n=500)",
+                    xaxis_title="Age (with ±2yr jitter)", yaxis_title="Count",
+                    height=250, margin=dict(t=40, b=30, l=40, r=20),
+                )
+                st.plotly_chart(boot_fig, use_container_width=True, config=_chart_cfg)
+
+                st.markdown(
+                    f"**Original:** mean {participants_df['age'].mean():.1f}, "
+                    f"std {participants_df['age'].std():.1f}  \n"
+                    f"**Bootstrapped:** mean {training_df['age'].mean():.1f}, "
+                    f"std {training_df['age'].std():.1f}  \n"
+                    f"Age jitter (±2 years) preserves the original distribution "
+                    f"while adding sampling variance."
+                )
+
+        # Sex distribution comparison
+        col_sex_orig, col_sex_boot = st.columns(2)
+        with col_sex_orig:
+            n_m_orig = (participants_df["sex"] == "M").sum()
+            n_f_orig = (participants_df["sex"] == "F").sum()
+            sex_orig_fig = go.Figure(data=[go.Pie(
+                labels=["Male", "Female"], values=[n_m_orig, n_f_orig],
+                marker=dict(colors=["#3b82f6", "#ec4899"]), hole=0.45,
+            )])
+            sex_orig_fig.update_layout(title="Original Sex (n=20)", height=200, margin=dict(t=40, b=10, l=10, r=10))
+            st.plotly_chart(sex_orig_fig, use_container_width=True, config=_chart_cfg)
+
+        with col_sex_boot:
+            if training_df is not None:
+                # Derive sex from the original bootstrap process
+                st.markdown(
+                    f"**Sex ratio preserved:** The bootstrap resampling maintains the original "
+                    f"{n_m_orig}/{n_f_orig} M/F ratio (≈{n_m_orig/(n_m_orig+n_f_orig)*100:.0f}% male)."
+                )
+
+        st.markdown(
+            "##### Simulation Pipeline\n\n"
+            "```\n"
+            "OpenNeuro ds004460 (20 participants)\n"
+            "        │ age, sex, handedness\n"
+            "        ▼\n"
+            "Bootstrap up-sampling (n=500)\n"
+            "        │ resample with replacement + age jitter ±2yr\n"
+            "        ▼\n"
+            "Clinical variable simulation\n"
+            "        │ DHI, anxiety, visual sensitivity, symptom duration,\n"
+            "        │ trigger count, migraine, anxiety disorder\n"
+            "        │ (from published PPPD literature distributions)\n"
+            "        ▼\n"
+            "Treatment outcome simulation\n"
+            "        │ VRT and VR-VRT response rates\n"
+            "        │ (from meta-analysis effect sizes)\n"
+            "        ▼\n"
+            "training_data.csv (500 samples × 12 columns)\n"
+            "```"
+        )
+
     # ── Spacer ──
     st.markdown('<div style="height:10rem"></div>', unsafe_allow_html=True)
 

@@ -10,6 +10,12 @@ Built as a portfolio project for MSc Health Analytics / Health Data Science prog
 
 ---
 
+## Data Transparency Note
+
+The demographic seed data ([OpenNeuro ds004460](https://openneuro.org/datasets/ds004460/versions/1.1.0)) contains **healthy participants**, not PPPD patients. Only age and sex distributions were used. All clinical variables (DHI, anxiety, visual sensitivity, symptom duration, trigger count, comorbidities) and treatment outcomes are **simulated from published PPPD literature** (Staab et al., 2017; Popkirov et al., 2018; Micarelli et al., 2019; Bittar & von Söhsten Lins, 2015; Herdman et al., 2020). This is equivalent to a **literature-based simulation study**, not a retrospective clinical analysis. Every simulated variable is explicitly documented with its source reference in `train_model.py` and `constants.py` so reviewers can audit every assumption.
+
+---
+
 ## Demo
 
 ![Dashboard screenshot](docs/screenshot.png.jpg)

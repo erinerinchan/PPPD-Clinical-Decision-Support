@@ -45,9 +45,10 @@ The model predicts *response rates* rather than absolute post-treatment scores. 
 
 ```
 Code/
-├── app.py                  # Streamlit dashboard (3 tabs)
-├── train_model.py          # ML training pipeline
-├── analysis.ipynb          # Jupyter notebook — EDA, model comparison, reflections
+├── app.py                  # Streamlit dashboard (5 tabs)
+├── train_model.py          # ML training pipeline (model comparison, evaluation, saving)
+├── simulate.py             # Data simulation module (bootstrap, clinical variable generation)
+├── analysis.ipynb          # Jupyter notebook — EDA, model comparison, validation, reflections
 ├── constants.py            # Literature-derived constants and references
 ├── training_data.csv       # Generated training dataset (500 samples)
 ├── pppd_vrt_model.pkl      # Trained Random Forest model

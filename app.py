@@ -1302,6 +1302,7 @@ with tab2:
                         delta=f"-{vrt_drop} pts" if vrt_drop > 0 else f"+{abs(vrt_drop)} pts",
                         delta_color="inverse",
                     )
+                    st.caption(f"90% CI: {vrt_final_ci_lo} – {vrt_final_ci_hi}")
                 with col_k3:
                     st.metric(
                         "After VR-Enhanced Rehabilitation",
@@ -1309,6 +1310,17 @@ with tab2:
                         delta=f"-{vr_drop} pts" if vr_drop > 0 else f"+{abs(vr_drop)} pts",
                         delta_color="inverse",
                     )
+                    st.caption(f"90% CI: {vr_final_ci_lo} – {vr_final_ci_hi}")
+
+                # ── Confidence interval detail ──
+                st.markdown('<div style="margin-top:0.5rem"></div>', unsafe_allow_html=True)
+                st.info(
+                    f"**Predicted VRT response:** {vrt_rate*100:.1f}% DHI reduction "
+                    f"(90% CI: {vrt_ci_lower*100:.1f}–{vrt_ci_upper*100:.1f}%)  \n"
+                    f"**Predicted VR-VRT response:** {vr_rate*100:.1f}% DHI reduction "
+                    f"(90% CI: {vr_ci_lower*100:.1f}–{vr_ci_upper*100:.1f}%)  \n"
+                    f"*Confidence intervals derived from individual tree predictions across 200 Random Forest estimators.*"
+                )
 
                 st.markdown('<div style="margin-top:1.5rem"></div>', unsafe_allow_html=True)
                 st.divider()

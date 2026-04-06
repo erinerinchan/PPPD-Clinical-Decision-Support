@@ -688,8 +688,8 @@ def layered_scroll(sections_data, height=2000):
 
 
 # ── MAIN TABS ──
-tab1, tab2, tab3 = st.tabs(
-    ["📖 What is PPPD", "📊 Analytics & Treatment Prediction", "📚 Resources & References"]
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
+    ["📖 What is PPPD", "📊 Analytics & Treatment Prediction", "🔬 Model & Sensitivity", "📚 Literature Review", "📂 Resources & References"]
 )
 
 
@@ -1673,8 +1673,8 @@ per target — increasing complexity and losing any cross-target structure.
     st.markdown('<div style="height:10rem"></div>', unsafe_allow_html=True)
 
 
-# ── TAB 3 ──
-with tab3:
+# ── TAB 5 (Resources) ──
+with tab5:
     st.markdown(
         '<h2 class="tab-heading">Resources &amp; References</h2>',
         unsafe_allow_html=True,

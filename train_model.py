@@ -228,7 +228,7 @@ print(f"\n   Train : {len(X_train)}   Test : {len(X_test)}")
 # ───────────────────────────────────────────
 # 6.  MODEL COMPARISON  (5-fold CV)
 # ───────────────────────────────────────────
-print("\n── Model Comparison (5-fold CV, scoring on VRT response rate) ──")
+print("\n── Model Comparison (5-fold CV, both targets) ──")
 candidates = {
     "Linear Regression": LinearRegression(),
     "Random Forest": RandomForestRegressor(
@@ -241,13 +241,25 @@ candidates = {
 
 best_name, best_r2 = None, -999
 cv_results = {}
+# Evaluate each model on BOTH targets for full comparison table
 for name, m in candidates.items():
-    scores = cross_val_score(m, X_train, y_train["vrt_response"], cv=5, scoring="r2")
-    mean_r2, std_r2 = scores.mean(), scores.std()
-    cv_results[name] = {"mean_r2": float(mean_r2), "std_r2": float(std_r2)}
-    print(f"   {name:25s}  R2 = {mean_r2:.4f} +/- {std_r2:.4f}")
-    if mean_r2 > best_r2:
-        best_name, best_r2 = name, mean_r2
+    cv_results[name] = {}
+    for tgt in target_cols:
+        from sklearn.base import clone
+        m_clone = clone(m)
+        scores_r2 = cross_val_score(m_clone, X_train, y_train[tgt], cv=5, scoring="r2")
+        scores_mae = -cross_val_score(m_clone, X_train, y_train[tgt], cv=5, scoring="neg_mean_absolute_error")
+        cv_results[name][tgt] = {
+            "mean_r2": float(scores_r2.mean()),
+            "std_r2": float(scores_r2.std()),
+            "mean_mae": float(scores_mae.mean()),
+            "std_mae": float(scores_mae.std()),
+        }
+        print(f"   {name:25s}  {tgt:15s}  R2 = {scores_r2.mean():.4f} ± {scores_r2.std():.4f}   MAE = {scores_mae.mean():.4f} ± {scores_mae.std():.4f}")
+    # Use VRT response for best-model selection
+    vrt_r2 = cv_results[name]["vrt_response"]["mean_r2"]
+    if vrt_r2 > best_r2:
+        best_name, best_r2 = name, vrt_r2
 
 print(f"\n   Best single-target model: {best_name}")
 
@@ -271,6 +283,26 @@ for t in target_cols:
     rmse = np.sqrt(mean_squared_error(y_test[t], y_pred[t]))
     test_metrics[t] = {"r2": float(r2), "mae": float(mae), "rmse": float(rmse)}
     print(f"   {t:15s}  R2={r2:.4f}   MAE={mae:.2f}   RMSE={rmse:.2f}")
+
+# Also compute test-set metrics for all candidate models (for comparison table)
+all_test_metrics = {}
+for name, m in candidates.items():
+    from sklearn.base import clone
+    all_test_metrics[name] = {}
+    for tgt in target_cols:
+        m_clone = clone(m)
+        m_clone.fit(X_train, y_train[tgt])
+        y_p = m_clone.predict(X_test)
+        all_test_metrics[name][tgt] = {
+            "r2": float(r2_score(y_test[tgt], y_p)),
+            "mae": float(mean_absolute_error(y_test[tgt], y_p)),
+            "rmse": float(np.sqrt(mean_squared_error(y_test[tgt], y_p))),
+        }
+print("\n── All Models Test-Set Comparison ──")
+for name in all_test_metrics:
+    for tgt in target_cols:
+        m = all_test_metrics[name][tgt]
+        print(f"   {name:25s}  {tgt:15s}  R2={m['r2']:.4f}  MAE={m['mae']:.4f}  RMSE={m['rmse']:.4f}")
 
 # ───────────────────────────────────────────
 # 8.  FEATURE IMPORTANCE
@@ -296,6 +328,7 @@ metrics_path = DATA_DIR / "model_metrics.json"
 metrics = {
     "cv_comparison": cv_results,
     "test_metrics": test_metrics,
+    "all_test_metrics": all_test_metrics,
     "best_model": best_name,
     "n_train": int(len(X_train)),
     "n_test": int(len(X_test)),

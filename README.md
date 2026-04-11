@@ -1,12 +1,12 @@
 # PPPD Clinical Decision Support System
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://pppd-clinical-decision-support.streamlit.app/)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://pppd-clinical-decision-support.onrender.com/)
 
 A machine learning-powered web application for predicting vestibular rehabilitation therapy (VRT) outcomes in patients with **Persistent Postural-Perceptual Dizziness (PPPD)**.
 
 Built as a portfolio project for MSc Health Analytics / Health Data Science programme admission in Hong Kong — demonstrating the integration of clinical domain knowledge, machine learning methodology, and interactive data visualisation.
 
-**[▶ Try the Live Demo](https://pppd-clinical-decision-support.streamlit.app/)**
+**[▶ Try the Live Demo](https://pppd-clinical-decision-support.onrender.com/)**
 
 ---
 
